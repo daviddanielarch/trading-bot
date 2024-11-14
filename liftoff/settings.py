@@ -32,11 +32,11 @@ ALLOWED_HOSTS = ["*"]
 # Set default values for the environment variables if they’re not already set
 # os.environ.setdefault("REDIS_URL", "redis://127.0.0.1:6379")
 
-CELERY_BROKER_URL = os.getenv["REDIS_URL"]
+CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = os.getenv["REDIS_URL"]
+CELERY_RESULT_BACKEND = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 # CELERY BEAT SCHEDULER
