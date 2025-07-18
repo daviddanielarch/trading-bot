@@ -16,6 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+
+# Configure admin site
+admin.site.site_header = getattr(settings, 'ADMIN_SITE_HEADER', 'Fer App')
+admin.site.site_title = getattr(settings, 'ADMIN_SITE_TITLE', 'Fer App')
+admin.site.index_title = getattr(settings, 'ADMIN_INDEX_TITLE', 'Welcome to Fer App')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

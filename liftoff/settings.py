@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-l(&^4gm(sj67p+p=4cham&1=%k3lo9uugb*r00_l+ugn+$x$in'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -153,3 +153,13 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = ["https://app-service-production-ccd5.up.railway.app/*"]
+
+# Admin site configuration
+ADMIN_SITE_HEADER = "Fer App"
+ADMIN_SITE_TITLE = "Fer App"
+ADMIN_INDEX_TITLE = "Welcome to Fer App"
+
+try:
+    from .local import *
+except ModuleNotFoundError:
+    pass
