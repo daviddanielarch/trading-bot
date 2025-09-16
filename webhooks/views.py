@@ -5,7 +5,7 @@ from functools import wraps
 import logging
 from bingx_client import BingXClient
 from liftoff.settings import WEBHOOK_IP_ALLOWED
-from webhooks.models import Position
+from webhooks.models import Position, Settings
 from decimal import Decimal
 from datetime import datetime
 from telegram_client import TelegramClient
@@ -56,9 +56,15 @@ def webhook_handler(request):
     logger.info(f"Webhook received: {data}")
     try:
         ticker, side, time_frame, use_demo = data.decode('utf-8').split(',')
+        use_demo = use_demo == 'true'
     except Exception as e:
         logger.error(f"Invalid data format: {data} - {e}")
         return JsonResponse({'status': 'Invalid data format'}, status=400)
+
+    trading_enabled = Settings.objects.get(key='trading_enabled').value == 'true'
+    if not trading_enabled:
+        logger.warning("Trading is not enabled")
+        return JsonResponse({'status': 'Trading is not enabled'}, status=400)
 
     client = BingXClient(demo=use_demo)
 
@@ -68,9 +74,9 @@ def webhook_handler(request):
             logger.warning(f"Position already exists for {ticker} {time_frame}")
             return JsonResponse({'status': 'Position already exists'}, status=400)
 
-
         price = client.get_price(ticker)
-        quantity = POSITION_USDT / Decimal(price)
+        position_usdt = Decimal(Settings.objects.get(key='position_usdt').value)
+        quantity = position_usdt / Decimal(price)
         response = client.place_order(
             symbol=ticker,
             side='BUY',
