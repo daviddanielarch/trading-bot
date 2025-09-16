@@ -4,9 +4,11 @@ from django.views.decorators.http import require_http_methods
 import logging
 from bingx_client import BingXClient
 from webhooks.models import Position, Settings
+from decimal import Decimal
+from datetime import datetime
 logger = logging.getLogger(__name__)
 
-POSITION_USDT = 100
+POSITION_USDT = Decimal(100)
 
 
 @csrf_exempt
@@ -27,12 +29,15 @@ def webhook_handler(request):
         return JsonResponse({'status': 'Invalid data format'}, status=400)
 
     client = BingXClient(demo=use_demo)
-    if Settings.objects.get(key='trading_enabled').value != 'true':
-        return JsonResponse({'status': 'success'})
 
     if side == 'BUY':
+        # Only one position can be open at a time
+        if Position.objects.filter(ticker=ticker, timeframe=time_frame, closed_at__isnull=True).exists():
+            return JsonResponse({'status': 'Position already exists'}, status=400)
+
+
         price = client.get_price(ticker)
-        quantity = POSITION_USDT / price
+        quantity = POSITION_USDT / Decimal(price)
         response = client.place_order(
             symbol=ticker,
             side='BUY',
@@ -40,16 +45,23 @@ def webhook_handler(request):
             positionSide='LONG',
             quantity=quantity
         )
-        avg_price = response['data']['order']['avgPrice']
+        print(response)
+        avg_price = Decimal(response['data']['order']['avgPrice'])
+        executed_quantity = Decimal(response['data']['order']['executedQty'])
+        executed_quantity_usdt = avg_price * executed_quantity
         Position.objects.create(
             ticker=ticker,
             timeframe=time_frame,
             avg_buy_price=avg_price,
-            quantity=quantity,
-            quantity_usdt=POSITION_USDT
+            quantity=executed_quantity,
+            quantity_usdt=executed_quantity_usdt
         )
     elif side == 'SELL':
-        position = Position.objects.get(ticker=ticker, timeframe=time_frame)
+        try:
+            position = Position.objects.get(ticker=ticker, timeframe=time_frame, closed_at__isnull=True)
+        except Position.DoesNotExist:
+            return JsonResponse({'status': 'Position does not exist'}, status=400)
+
         response = client.place_order(
             symbol=ticker,
             side='SELL',
@@ -57,5 +69,10 @@ def webhook_handler(request):
             positionSide='LONG',
             quantity=position.quantity
         )
+
+        avg_price = response['data']['order']['avgPrice']
+        position.avg_sell_price = avg_price
+        position.closed_at = datetime.now()
+        position.save()
 
     return JsonResponse({'status': 'success'})
