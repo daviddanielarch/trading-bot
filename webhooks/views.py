@@ -4,20 +4,17 @@ from django.views.decorators.http import require_http_methods
 from functools import wraps
 import logging
 from bingx_client import BingXClient
+from liftoff.settings import WEBHOOK_IP_ALLOWED
 from webhooks.models import Position
 from decimal import Decimal
 from datetime import datetime
-logger = logging.getLogger(__name__)
+from telegram_client import TelegramClient
+from liftoff.settings import settings
 
 POSITION_USDT = Decimal(100)
 
-# Allowed IP addresses for webhook access
-TRADINGVIEW_IPS = [
-    '52.89.214.238',
-    '34.212.75.30', 
-    '54.218.53.128',
-    '52.32.178.7'
-]
+logger = logging.getLogger(__name__)
+telegram_client = TelegramClient(settings.TELEGRAM_BOT_TOKEN, settings.TELEGRAM_CHAT_ID)
 
 
 def ip_whitelist(allowed_ips):
@@ -27,14 +24,15 @@ def ip_whitelist(allowed_ips):
     def decorator(view_func):
         @wraps(view_func)
         def wrapper(request, *args, **kwargs):
-            # Get client IP address
             x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
             if x_forwarded_for:
                 client_ip = x_forwarded_for.split(',')[0].strip()
             else:
                 client_ip = request.META.get('REMOTE_ADDR')
             
-            # Check if IP is in whitelist
+            if not allowed_ips:
+                return view_func(request, *args, **kwargs)
+            
             if client_ip not in allowed_ips:
                 logger.warning(f"Unauthorized webhook access attempt from IP: {client_ip}")
                 return JsonResponse({'status': 'Unauthorized'}, status=403)
@@ -46,7 +44,7 @@ def ip_whitelist(allowed_ips):
 
 @csrf_exempt
 @require_http_methods(["POST"])
-@ip_whitelist(TRADINGVIEW_IPS)
+@ip_whitelist(WEBHOOK_IP_ALLOWED)
 def webhook_handler(request):
     """
     Handle incoming webhook POST requests.
@@ -67,6 +65,7 @@ def webhook_handler(request):
     if side == 'BUY':
         # Only one position can be open at a time
         if Position.objects.filter(ticker=ticker, timeframe=time_frame, closed_at__isnull=True).exists():
+            logger.warning(f"Position already exists for {ticker} {time_frame}")
             return JsonResponse({'status': 'Position already exists'}, status=400)
 
 
@@ -79,7 +78,7 @@ def webhook_handler(request):
             positionSide='LONG',
             quantity=quantity
         )
-        print(response)
+
         avg_price = Decimal(response['data']['order']['avgPrice'])
         executed_quantity = Decimal(response['data']['order']['executedQty'])
         executed_quantity_usdt = avg_price * executed_quantity
@@ -94,7 +93,14 @@ def webhook_handler(request):
         try:
             position = Position.objects.get(ticker=ticker, timeframe=time_frame, closed_at__isnull=True)
         except Position.DoesNotExist:
+            logger.warning(f"Position does not exist for {ticker} {time_frame}")
             return JsonResponse({'status': 'Position does not exist'}, status=400)
+
+        price = client.get_price(ticker)
+        if price < position.avg_buy_price:
+            logger.warning(f"Price is less than average buy price for {ticker} {time_frame}")
+            telegram_client.send_message(f"Price is less than average buy price for {ticker} {time_frame}")
+            return JsonResponse({'status': 'Price is less than average buy price'}, status=400)
 
         response = client.place_order(
             symbol=ticker,

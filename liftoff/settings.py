@@ -143,6 +143,19 @@ ADMIN_SITE_HEADER = "Trading Bot"
 ADMIN_SITE_TITLE = "Trading Bot"
 ADMIN_INDEX_TITLE = "Welcome!"
 
+WEBHOOK_IP_ALLOWED = os.getenv("WEBHOOK_IP_ALLOWED", "").split(",")
+TRADINGVIEW_IPS = [
+    '52.89.214.238',
+    '34.212.75.30', 
+    '54.218.53.128',
+    '52.32.178.7'
+]
+WEBHOOK_IP_ALLOWED += TRADINGVIEW_IPS
+
+# Telegram Bot Configuration
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
