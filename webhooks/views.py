@@ -20,7 +20,12 @@ def webhook_handler(request):
     """
     data = request.body
     logger.info(f"Webhook received: {data}")
-    ticker, side, time_frame, use_demo = data.split(',')
+    try:
+        ticker, side, time_frame, use_demo = data.decode('utf-8').split(',')
+    except Exception as e:
+        logger.error(f"Invalid data format: {data} - {e}")
+        return JsonResponse({'status': 'Invalid data format'}, status=400)
+
     client = BingXClient(demo=use_demo)
     if Settings.objects.get(key='trading_enabled').value != 'true':
         return JsonResponse({'status': 'success'})
