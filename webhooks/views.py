@@ -96,7 +96,7 @@ def webhook_handler(request):
             logger.warning(f"Position does not exist for {ticker} {time_frame}")
             return JsonResponse({'status': 'Position does not exist'}, status=400)
 
-        price = client.get_price(ticker)
+        price = Decimal(client.get_price(ticker))
         if price < position.avg_buy_price:
             logger.warning(f"Price is less than average buy price for {ticker} {time_frame}")
             telegram_client.send_message(f"Price is less than average buy price for {ticker} {time_frame}")
