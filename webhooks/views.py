@@ -9,7 +9,7 @@ from webhooks.models import Position
 from decimal import Decimal
 from datetime import datetime
 from telegram_client import TelegramClient
-from liftoff.settings import settings
+from django.conf import settings
 
 POSITION_USDT = Decimal(100)
 
