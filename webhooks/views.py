@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from functools import wraps
 import logging
+import yaml
 from bingx_client import BingXClient
 from liftoff.settings import WEBHOOK_IP_ALLOWED
 from webhooks.models import Position, Settings
@@ -49,14 +50,28 @@ def webhook_handler(request):
     """
     Handle incoming webhook POST requests.
     
-    This view processes webhook data and can be extended to handle
+    This view processes webhook data in YAML format and can be extended to handle
     different types of webhook events based on your needs.
     """
     data = request.body
     logger.info(f"Webhook received: {data}")
     try:
-        ticker, side, time_frame, use_demo = data.decode('utf-8').split(',')
-        use_demo = use_demo == 'true'
+        # Parse YAML data
+        yaml_data = yaml.safe_load(data.decode('utf-8'))
+        
+        # Extract required fields from YAML
+        ticker = yaml_data.get('ticker')
+        side = yaml_data.get('side')
+        time_frame = yaml_data.get('timeframe')
+        use_demo = yaml_data.get('use_demo', False)
+        
+        # Validate required fields
+        if not all([ticker, side, time_frame]):
+            raise ValueError("Missing required fields: ticker, side, timeframe")
+            
+    except yaml.YAMLError as e:
+        logger.error(f"Invalid YAML format: {data} - {e}")
+        return JsonResponse({'status': 'Invalid YAML format'}, status=400)
     except Exception as e:
         logger.error(f"Invalid data format: {data} - {e}")
         return JsonResponse({'status': 'Invalid data format'}, status=400)
