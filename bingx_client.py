@@ -6,6 +6,7 @@ from urllib.parse import urlencode
 from typing import Dict, Any, Optional
 import os
 from dotenv import load_dotenv
+from decimal import Decimal
 
 # Load environment variables
 load_dotenv()
@@ -89,14 +90,15 @@ class BingXClient:
                 print(f"Response: {e.response.text}")
             raise
     
-    def get_price(self, symbol: str) -> Dict[str, Any]:
+    def get_price(self, symbol: str) -> Decimal:
         """
         Get the current price of a symbol
         """
         params = {
             'symbol': symbol
         }
-        return self._make_request('GET', '/openApi/swap/v1/ticker/price', params)['data']['price']
+        response = self._make_request('GET', '/openApi/swap/v1/ticker/price', params)
+        return Decimal(response['data']['price'])
     
     def place_order(self, symbol: str, side: str, order_type: str, positionSide: str, quantity: float, 
                    price: Optional[float] = None, **kwargs) -> Dict[str, Any]:
@@ -124,13 +126,3 @@ class BingXClient:
             params['price'] = str(price)
         
         return self._make_request('POST', '/openApi/swap/v2/trade/order', params)
-    
-    def close_position(self, order_id: str) -> Dict[str, Any]:
-        """
-        Close a position
-        """
-        params = {
-            'positionId': order_id,
-            'timestamp': str(int(time.time() * 1000))
-        }
-        return self._make_request('POST', '/openApi/swap/v1/trade/closePosition', params)

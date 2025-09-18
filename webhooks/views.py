@@ -91,7 +91,7 @@ def webhook_handler(request):
 
         price = client.get_price(ticker)
         position_usdt = Decimal(Settings.objects.get(key='position_usdt').value)
-        quantity = position_usdt / Decimal(price)
+        quantity = position_usdt / price
         response = client.place_order(
             symbol=ticker,
             side='BUY',
@@ -99,6 +99,10 @@ def webhook_handler(request):
             positionSide='LONG',
             quantity=quantity
         )
+        if not response['data']:
+            error_message = response['msg']
+            logger.warning(f"Failed to place order for {ticker} {time_frame}: {error_message}")
+            return JsonResponse({'status': 'Failed to place order', 'error': error_message}, status=400)
 
         avg_price = Decimal(response['data']['order']['avgPrice'])
         executed_quantity = Decimal(response['data']['order']['executedQty'])
@@ -117,7 +121,7 @@ def webhook_handler(request):
             logger.warning(f"Position does not exist for {ticker} {time_frame}")
             return JsonResponse({'status': 'Position does not exist'}, status=400)
 
-        price = Decimal(client.get_price(ticker))
+        price = client.get_price(ticker)
         if price < position.avg_buy_price:
             logger.warning(f"Price is less than average buy price for {ticker} {time_frame}")
             telegram_client.send_message(f"Price is less than average buy price for {ticker} {time_frame}")
@@ -130,6 +134,10 @@ def webhook_handler(request):
             positionSide='LONG',
             quantity=position.quantity
         )
+        if not response['data']:
+            error_message = response['msg']
+            logger.warning(f"Failed to place order for {ticker} {time_frame}: {error_message}")
+            return JsonResponse({'status': 'Failed to place order', 'error': error_message}, status=400)
 
         avg_price = response['data']['order']['avgPrice']
         position.avg_sell_price = avg_price
