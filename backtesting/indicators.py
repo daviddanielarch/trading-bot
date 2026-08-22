@@ -109,3 +109,15 @@ def supertrend(
 def highest_high(high: pd.Series, period: int) -> pd.Series:
     return high.rolling(period).max()
 
+
+def atr(high: pd.Series, low: pd.Series, close: pd.Series, period: int = 14) -> pd.Series:
+    tr = pd.concat(
+        [
+            high - low,
+            (high - close.shift()).abs(),
+            (low - close.shift()).abs(),
+        ],
+        axis=1,
+    ).max(axis=1)
+    return tr.rolling(period, min_periods=period).mean()
+
