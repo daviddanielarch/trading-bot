@@ -1,0 +1,146 @@
+{
+  "best_strategy": "10_Supertrend_Bull",
+  "best_description": "Entrada en flip alcista Supertrend (10,3)",
+  "bull_markets": {
+    "bull_2016_2017": [
+      "2016-01-01",
+      "2017-12-17"
+    ],
+    "bull_2020_2021": [
+      "2020-10-01",
+      "2021-11-10"
+    ]
+  },
+  "ranking": [
+    {
+      "strategy": "1_EMA_Cross_12_26",
+      "description": "Cruce EMA 12/26 \u2014 seguimiento de tendencia r\u00e1pido",
+      "avg_return_pct": 975.53,
+      "avg_buy_hold_pct": 2460.62,
+      "avg_excess_pct": -1485.1,
+      "avg_max_dd_pct": -33.84,
+      "avg_sharpe": 2.51,
+      "total_trades": 441,
+      "avg_profit_factor": 2.46,
+      "avg_win_rate_pct": 38.28,
+      "composite_score": -28.65
+    },
+    {
+      "strategy": "2_EMA_Cross_21_55",
+      "description": "Cruce EMA 21/55 \u2014 tendencia media en bull market",
+      "avg_return_pct": 1054.17,
+      "avg_buy_hold_pct": 2460.62,
+      "avg_excess_pct": -1406.46,
+      "avg_max_dd_pct": -29.52,
+      "avg_sharpe": 2.7,
+      "total_trades": 205,
+      "avg_profit_factor": 3.14,
+      "avg_win_rate_pct": 40.88,
+      "composite_score": 19.9
+    },
+    {
+      "strategy": "3_RSI_Pullback",
+      "description": "Pullback RSI en uptrend (precio > EMA200)",
+      "avg_return_pct": 101.6,
+      "avg_buy_hold_pct": 2460.62,
+      "avg_excess_pct": -2359.02,
+      "avg_max_dd_pct": -32.66,
+      "avg_sharpe": 1.48,
+      "total_trades": 306,
+      "avg_profit_factor": 1.87,
+      "avg_win_rate_pct": 38.22,
+      "composite_score": -555.19
+    },
+    {
+      "strategy": "4_Breakout_20H",
+      "description": "Ruptura de m\u00e1ximo 20h con salida en EMA10",
+      "avg_return_pct": 133.4,
+      "avg_buy_hold_pct": 2460.62,
+      "avg_excess_pct": -2327.22,
+      "avg_max_dd_pct": -25.49,
+      "avg_sharpe": 1.4,
+      "total_trades": 635,
+      "avg_profit_factor": 1.84,
+      "avg_win_rate_pct": 42.12,
+      "composite_score": -535.22
+    },
+    {
+      "strategy": "5_MACD_Cross",
+      "description": "Cruce MACD alcista",
+      "avg_return_pct": 161.46,
+      "avg_buy_hold_pct": 2460.62,
+      "avg_excess_pct": -2299.16,
+      "avg_max_dd_pct": -44.72,
+      "avg_sharpe": 1.32,
+      "total_trades": 1025,
+      "avg_profit_factor": 1.54,
+      "avg_win_rate_pct": 39.39,
+      "composite_score": -521.58
+    },
+    {
+      "strategy": "6_BB_Squeeze_Break",
+      "description": "Squeeze Bollinger + ruptura banda superior",
+      "avg_return_pct": 283.46,
+      "avg_buy_hold_pct": 2460.62,
+      "avg_excess_pct": -2177.16,
+      "avg_max_dd_pct": -29.29,
+      "avg_sharpe": 1.38,
+      "total_trades": 330,
+      "avg_profit_factor": 2.24,
+      "avg_win_rate_pct": 43.86,
+      "composite_score": -445.58
+    },
+    {
+      "strategy": "7_ADX_DI_Trend",
+      "description": "ADX > 25 con +DI > -DI",
+      "avg_return_pct": 218.6,
+      "avg_buy_hold_pct": 2460.62,
+      "avg_excess_pct": -2242.02,
+      "avg_max_dd_pct": -34.4,
+      "avg_sharpe": 1.67,
+      "total_trades": 895,
+      "avg_profit_factor": 1.91,
+      "avg_win_rate_pct": 44.04,
+      "composite_score": -484.86
+    },
+    {
+      "strategy": "8_Triple_EMA_Pullback",
+      "description": "Stack EMA 8/21/55 + rebote en EMA21",
+      "avg_return_pct": 111.72,
+      "avg_buy_hold_pct": 2460.62,
+      "avg_excess_pct": -2348.91,
+      "avg_max_dd_pct": -21.68,
+      "avg_sharpe": 0.94,
+      "total_trades": 161,
+      "avg_profit_factor": 2.44,
+      "avg_win_rate_pct": 28.32,
+      "composite_score": -548.29
+    },
+    {
+      "strategy": "9_Momentum_ROC",
+      "description": "ROC > 2% con precio sobre SMA50",
+      "avg_return_pct": 140.42,
+      "avg_buy_hold_pct": 2460.62,
+      "avg_excess_pct": -2320.21,
+      "avg_max_dd_pct": -30.61,
+      "avg_sharpe": 1.46,
+      "total_trades": 473,
+      "avg_profit_factor": 1.84,
+      "avg_win_rate_pct": 41.9,
+      "composite_score": -531.65
+    },
+    {
+      "strategy": "10_Supertrend_Bull",
+      "description": "Entrada en flip alcista Supertrend (10,3)",
+      "avg_return_pct": 1384.26,
+      "avg_buy_hold_pct": 2460.62,
+      "avg_excess_pct": -1076.37,
+      "avg_max_dd_pct": -32.86,
+      "avg_sharpe": 2.5,
+      "total_trades": 315,
+      "avg_profit_factor": 2.66,
+      "avg_win_rate_pct": 51.95,
+      "composite_score": 216.79
+    }
+  ]
+}
