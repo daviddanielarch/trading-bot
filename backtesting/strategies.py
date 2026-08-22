@@ -135,16 +135,6 @@ def supertrend_bull(df: pd.DataFrame) -> pd.Series:
     return _hold_until_exit(entries, exits)
 
 
-def golden_cross_50_200(df: pd.DataFrame) -> pd.Series:
-    """Golden cross on 1h: EMA50 crosses above EMA200."""
-    close = df["Close"]
-    fast = ema(close, 50)
-    slow = ema(close, 200)
-    entries = _cross_above(fast, slow)
-    exits = _cross_below(fast, slow)
-    return _hold_until_exit(entries, exits)
-
-
 def _hold_until_exit(entries: pd.Series, exits: pd.Series) -> pd.Series:
     """Convert entry/exit events into a position series (1 = long, 0 = flat)."""
     position = pd.Series(0, index=entries.index, dtype=int)
