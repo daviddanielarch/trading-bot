@@ -144,6 +144,6 @@ media/
 *.swp
 *.swo
 
-# OS
-.DS_Store
-Thumbs.db 
+# Large downloaded market data (use scripts/download_btc_data.py)
+data/btc_usd_1h.csv
+

@@ -1,0 +1,11 @@
+strategy,description,avg_return_pct,avg_buy_hold_pct,avg_excess_pct,avg_max_dd_pct,avg_sharpe,total_trades,avg_profit_factor,avg_win_rate_pct,composite_score
+10_Supertrend_Bull,"Entrada en flip alcista Supertrend (10,3)",1384.26,2460.62,-1076.37,-32.86,2.5,315,2.66,51.95,216.79
+2_EMA_Cross_21_55,Cruce EMA 21/55 — tendencia media en bull market,1054.17,2460.62,-1406.46,-29.52,2.7,205,3.14,40.88,19.9
+1_EMA_Cross_12_26,Cruce EMA 12/26 — seguimiento de tendencia rápido,975.53,2460.62,-1485.1,-33.84,2.51,441,2.46,38.28,-28.65
+6_BB_Squeeze_Break,Squeeze Bollinger + ruptura banda superior,283.46,2460.62,-2177.16,-29.29,1.38,330,2.24,43.86,-445.58
+7_ADX_DI_Trend,ADX > 25 con +DI > -DI,218.6,2460.62,-2242.02,-34.4,1.67,895,1.91,44.04,-484.86
+5_MACD_Cross,Cruce MACD alcista,161.46,2460.62,-2299.16,-44.72,1.32,1025,1.54,39.39,-521.58
+9_Momentum_ROC,ROC > 2% con precio sobre SMA50,140.42,2460.62,-2320.21,-30.61,1.46,473,1.84,41.9,-531.65
+4_Breakout_20H,Ruptura de máximo 20h con salida en EMA10,133.4,2460.62,-2327.22,-25.49,1.4,635,1.84,42.12,-535.22
+8_Triple_EMA_Pullback,Stack EMA 8/21/55 + rebote en EMA21,111.72,2460.62,-2348.91,-21.68,0.94,161,2.44,28.32,-548.29
+3_RSI_Pullback,Pullback RSI en uptrend (precio > EMA200),101.6,2460.62,-2359.02,-32.66,1.48,306,1.87,38.22,-555.19
